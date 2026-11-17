@@ -1,0 +1,43 @@
+{
+  "butter_commodities": [
+    "BUTTER",
+    "BUTTERMILK"
+  ],
+  "statisticcat_desc": [
+    "MOISTURE CONTENT",
+    "PRICE RECEIVED",
+    "PRODUCTION",
+    "SALES",
+    "STOCKS"
+  ],
+  "freq_desc": [
+    "ANNUAL",
+    "MONTHLY",
+    "POINT IN TIME",
+    "WEEKLY"
+  ],
+  "agg_level_desc": [
+    "NATIONAL",
+    "REGION : MULTI-STATE",
+    "STATE"
+  ],
+  "short_desc": [
+    "BUTTER - MOISTURE CONTENT, MEASURED IN PCT",
+    "BUTTER - PRICE RECEIVED, MEASURED IN $ / LB",
+    "BUTTER - PRICE RECEIVED, MEASURED IN $ / LB, 38 PCT MOISTURE BASIS",
+    "BUTTER - PRICE RECEIVED, MEASURED IN $ / LB, 39 PCT MOISTURE BASIS",
+    "BUTTER - PRODUCTION, MEASURED IN LB",
+    "BUTTER - PRODUCTION, MEASURED IN PLANTS",
+    "BUTTER - SALES, MEASURED IN LB",
+    "BUTTER, COLD STORAGE - STOCKS, MEASURED IN LB"
+  ],
+  "selected_short_desc": "BUTTER, COLD STORAGE - STOCKS, MEASURED IN LB",
+  "query": {
+    "commodity_desc": "BUTTER",
+    "statisticcat_desc": "STOCKS",
+    "short_desc": "BUTTER, COLD STORAGE - STOCKS, MEASURED IN LB",
+    "agg_level_desc": "NATIONAL"
+  },
+  "record_count": 1324,
+  "retrieved": "2026-11-17"
+}

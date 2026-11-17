@@ -1,0 +1,96 @@
+Build a Jupyter notebook, `butter_cold_storage.ipynb`, that downloads U.S. butter
+cold-storage stocks from USDA NASS and visualizes their seasonal cycle across years.
+
+I have a mamba environment here called jupyter that has all libraries installed.
+
+## Data
+- Source: USDA NASS Quick Stats API (monthly Cold Storage report, butter stocks).
+  Base endpoint: https://quickstats.nass.usda.gov/api/api_GET/
+- My API key is in the .env file here with the name NASS_API_KEY. Use the Python dotenv library to read it in without exposing it.
+- Don't guess parameter values. Use /api/get_param_values/ to find the right
+  commodity_desc, statisticcat_desc, short_desc, freq_desc, and agg_level_desc,
+  and /api/get_counts/ before pulling data (each request returns at most 50,000
+  records). Print the unique short_desc values you find, then pick the series for
+  total U.S. butter stocks in all warehouses, measured in pounds, at the national
+  level. Tell me which one you picked and why.
+- Pull every year available. I'm hoping for 30+ years, including the 1992 record.
+- Cache the raw response to data/raw/ as CSV so the notebook can re-run offline.
+  Add a flag at the top to force a refresh.
+- If the API doesn't work, stop and tell me rather than switching sources quietly.
+  The fallback would be the Cold Storage report files on USDA ESMIS.
+
+Build a Jupyter notebook, `butter_cold_storage.ipynb`, that downloads U.S. butter
+cold-storage stocks from USDA NASS and produces a printable PDF showing their
+seasonal cycle across years.
+
+## Data
+- Source: USDA NASS Quick Stats API (monthly Cold Storage report, butter stocks).
+  Base endpoint: https://quickstats.nass.usda.gov/api/api_GET/
+- My API key is in the environment variable NASS_API_KEY. Read it from there; never
+  print it or write it to any file or notebook output.
+- Don't guess parameter values. Use /api/get_param_values/ to find the right
+  commodity_desc, statisticcat_desc, short_desc, freq_desc, and agg_level_desc,
+  and /api/get_counts/ before pulling data (each request returns at most 50,000
+  records). Print the unique short_desc values you find, then pick the series for
+  total U.S. butter stocks in all warehouses, measured in pounds, at the national
+  level. Tell me which one you picked and why.
+- Pull every year available. I'm hoping for 30+ years, including the 1992 record.
+- Cache the raw response to data/raw/ as CSV so the notebook can re-run offline.
+  Add a flag at the top to force a refresh.
+- If the API doesn't work, stop and tell me rather than switching sources quietly.
+  The fallback would be the Cold Storage report files on USDA ESMIS.
+
+## Cleaning
+- Value comes as a string with thousands separators. Suppressed or withheld values
+  like "(D)" or "(NA)" should become NaN and be reported, not dropped silently.
+- Build a proper month-end date from year + reference_period_desc (JAN, FEB, ...).
+  Drop annual or other non-monthly rows.
+- Convert to millions of pounds.
+- Check for duplicate year-month rows (e.g. revised vs. preliminary) and keep one,
+  explaining the rule you used.
+- Sanity checks: these should roughly match published figures. Assert or print them.
+  - Dec 2023 ≈ 199.5M lb, May 2024 ≈ 379.75M lb
+  - All-time high ≈ 747M lb, around 1992
+
+## Visualizations (matplotlib only, static, designed for print)
+1. Main chart: a radial "cycle" plot on a polar axis. Set theta direction to
+   clockwise and theta offset so January is at the top. Label the 12 months around
+   the edge, with radius = stocks. Draw one closed loop per year (wrap December
+   back to January). Color years with a sequential colormap (older = lighter) and
+   show a colorbar labeled "Year" instead of a legend. Draw the record year and the
+   most recent complete year as thicker lines in a contrasting color, labeled
+   directly on the chart.
+2. Companion: a year × month heatmap (imshow or pcolormesh) with a labeled
+   colorbar, because radial charts are hard to read precisely.
+3. Seasonal subseries: 12 small panels in a single figure, one per month. Each
+   panel shows that month's value across all years, with a horizontal line at the
+   month's mean, and all panels share a y-axis. This should make the spring
+   build-up and the pre-holiday drawdown easy to see.
+
+## Print requirements
+- Write all charts to one multi-page PDF, figures/butter_cold_storage.pdf, using
+  matplotlib.backends.backend_pdf.PdfPages, one chart per page. Also save each
+  chart as its own PDF.
+- Page size: US Letter (8.5 × 11 in). Use landscape for the heatmap and the
+  subseries if that reads better. Keep margins of at least 0.5 in so nothing gets
+  clipped when printed.
+- Keep it vector: no rasterized lines or text, except the heatmap cells, which can
+  be rasterized to keep the file small.
+- Set rcParams pdf.fonttype = 42 and ps.fonttype = 42 so fonts embed as TrueType.
+  Use a clean sans-serif, minimum 8 pt, with titles around 14 pt.
+- Choose colormaps that stay readable in grayscale (e.g. viridis or cividis, not
+  jet or rainbow). Never let color alone carry meaning: the highlighted years also
+  get thicker lines and direct labels.
+- Every page needs a title, a one-line subtitle stating the takeaway, units
+  (million lb), and a footer source note: "Source: USDA NASS Cold Storage, via
+  Quick Stats. Retrieved <date>."
+- Add a cover page to the PDF with a title, the date range covered, and the 3–5
+  bullet summary described below.
+
+## Notebook structure
+Short markdown cells explaining each step: setup → fetch → clean → validate →
+charts → PDF export → a 3–5 bullet "what the data shows" summary written from the
+actual numbers, not assumed. Pin dependencies in requirements.txt (no plotly or
+kaleido). Restart and run all at the end to confirm it executes top to bottom
+without errors. Then open the PDF, check every page for clipped labels or
+overlapping text, and fix anything you find.
